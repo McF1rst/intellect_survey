@@ -1,12 +1,47 @@
 import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2 import service_account
 import pandas as pd
 import datetime
+import hashlib
+
+# --- Authentification simple ---
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+# Utilisateurs autorisés (tu peux en ajouter d'autres ici)
+users = {
+    "laurane": hash_password("cheval2025"),
+    "admin": hash_password("admin123")
+}
+
+def login():
+    st.title("Connexion")
+
+    username = st.text_input("Nom d'utilisateur")
+    password = st.text_input("Mot de passe", type="password")
+
+    if st.button("Se connecter"):
+        if username in users and users[username] == hash_password(password):
+            st.session_state["logged_in"] = True
+            st.session_state["user"] = username
+            st.experimental_rerun()
+        else:
+            st.error("Nom d'utilisateur ou mot de passe incorrect.")
+
+# Vérifier si l'utilisateur est connecté
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
+
+if not st.session_state["logged_in"]:
+    login()
+    st.stop()
 
 # Authentification Google Sheets
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+creds = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
 client = gspread.authorize(creds)
 
 # Ouvrir le fichier Google Sheets
