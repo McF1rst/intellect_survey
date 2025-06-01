@@ -25,7 +25,7 @@ def login():
         if username in user_passwords and user_passwords[username] == hash_password(password):
             st.session_state["logged_in"] = True
             st.session_state["user"] = username
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("Nom d'utilisateur ou mot de passe incorrect.")
 
