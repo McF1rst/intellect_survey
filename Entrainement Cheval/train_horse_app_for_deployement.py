@@ -40,8 +40,13 @@ if not st.session_state["logged_in"]:
 secrets_dict = dict(st.secrets["gcp_service_account"])
 secrets_dict["private_key"] = secrets_dict["private_key"].replace("\\n", "\n")
 # Authentification Google Sheets
+scopes = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 creds = service_account.Credentials.from_service_account_info(
-    secrets_dict
+    secrets_dict,
+    scopes=scopes
 )
 client = gspread.authorize(creds)
 
