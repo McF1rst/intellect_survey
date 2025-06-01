@@ -10,10 +10,9 @@ import hashlib
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-# Utilisateurs autorisés (tu peux en ajouter d'autres ici)
-users = {
-    "laurane": hash_password("cheval2025"),
-    "admin": hash_password("admin123")
+# Récupérer les utilisateurs depuis st.secrets
+user_passwords = {
+    user: hash_password(pwd) for user, pwd in st.secrets["users"].items()
 }
 
 def login():
@@ -23,14 +22,14 @@ def login():
     password = st.text_input("Mot de passe", type="password")
 
     if st.button("Se connecter"):
-        if username in users and users[username] == hash_password(password):
+        if username in user_passwords and user_passwords[username] == hash_password(password):
             st.session_state["logged_in"] = True
             st.session_state["user"] = username
             st.experimental_rerun()
         else:
             st.error("Nom d'utilisateur ou mot de passe incorrect.")
 
-# Vérifier si l'utilisateur est connecté
+# Gérer la session utilisateur
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 
