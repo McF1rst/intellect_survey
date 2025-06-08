@@ -111,7 +111,7 @@ if st.sidebar.button("Ajouter cette séance"):
         values = [str(new_row[col]) for col in df.columns]
         gsheet.append_row(values)
         st.sidebar.success("Nouvelle séance ajoutée avec succès.")
-        st.experimental_rerun()
+        st.rerun()
 
 # Date actuelle
 today_date = datetime.datetime.now().date()
