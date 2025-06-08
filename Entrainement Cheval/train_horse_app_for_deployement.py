@@ -99,7 +99,7 @@ if page == 'Gérer séances':
                 # Utiliser delete_rows (gspread v5+)
                 gsheet.delete_rows(row_index)
                 st.success('Séance supprimée avec succès.')
-                st.experimental_rerun()
+                st.rerun()
             except AttributeError:
                 # Fallback : effacer la ligne (remplacer par cellules vides)
                 num_cols = len(df.columns)
@@ -107,7 +107,7 @@ if page == 'Gérer séances':
                 end_col = chr(65 + num_cols - 1)
                 gsheet.update(f'A{row_index}:{end_col}{row_index}', [blank])
                 st.success('Séance effacée (remplacement par vide).')
-                st.experimental_rerun()
+                st.rerun()
 
 elif page == 'Voir séances':
     st.subheader('Consultation et mise à jour des séances')
