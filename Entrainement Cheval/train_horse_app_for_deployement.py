@@ -83,6 +83,7 @@ if page == 'Gérer séances':
         else:
             new_row = {col: '' for col in df.columns if col!='Séance'}
             new_row['Date'] = new_date
+            new_row['Séance'] = new_exercise
             values = [str(new_row[col]) for col in list(new_row.keys())]
             gsheet.append_row(values)
             st.success('Nouvelle séance ajoutée avec succès.')
