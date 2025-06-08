@@ -71,7 +71,7 @@ page = st.sidebar.radio('Navigation', pages)
 if page == 'Gérer séances':
     st.title('Ajouter ou supprimer une séance')
     # Ajout de séance
-    st.subheader('Ajouter une séance')
+    st.info('### Ajouter une séance')
     col1, col2 = st.columns(2)
     with col1:
         new_date = st.date_input('Date de la nouvelle séance', value=datetime.date.today())
@@ -90,7 +90,7 @@ if page == 'Gérer séances':
 
     st.markdown('---')
     # Suppression de séance
-    st.subheader('Supprimer une séance')
+    st.info('### Supprimer une séance')
     del_date = st.date_input('Date de la séance à supprimer')
     if st.button('Supprimer cette séance'):
         if del_date not in df['Date'].values:
