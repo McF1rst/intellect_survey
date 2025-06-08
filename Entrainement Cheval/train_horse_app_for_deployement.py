@@ -109,7 +109,7 @@ if st.sidebar.button("Ajouter cette séance"):
         # Ajouter à la feuille
         # On convertit dans l'ordre des colonnes existantes
         values = [str(new_row[col]) for col in df.columns]
-        gsheet.append_row(values)
+        sheet.append_row(values)
         st.sidebar.success("Nouvelle séance ajoutée avec succès.")
         st.rerun()
 
