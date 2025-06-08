@@ -6,6 +6,7 @@ import pandas as pd
 import datetime
 import hashlib
 
+
 # --- Authentification simple ---
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
