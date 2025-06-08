@@ -94,7 +94,7 @@ if page == 'Gérer séances':
         else:
             idx = df[df['Date'] == del_date].index[0] + 2  # +2 pour entête et base 1
             try:
-                gsheet.delete_row(idx)
+                gsheet.delete_rows(idx)
                 st.success('Séance supprimée avec succès.')
                 st.rerun()
             except Exception as e:
