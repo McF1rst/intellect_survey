@@ -73,13 +73,14 @@ if page == 'Gérer séances':
     # Ajout de séance
     st.subheader('Ajouter une séance')
     new_date = st.date_input('Date de la nouvelle séance', value=datetime.date.today())
+    new_exercise = st.text_input("Exercice associé", value="")
     if st.button('Ajouter cette séance'):
         if new_date in df['Date'].values:
-            st.warning('Cette date existe déjà.')
+            st.warning('Cette date existe déjà. Si vous voulez la modifier, supprimez-la puis recréez la.')
         else:
-            new_row = {col: '' for col in df.columns}
+            new_row = {col: '' for col in df.columns if col!='Séance'}
             new_row['Date'] = new_date
-            values = [str(new_row[col]) for col in df.columns]
+            values = [str(new_row[col]) for col in list(new_row.keys())]
             gsheet.append_row(values)
             st.success('Nouvelle séance ajoutée avec succès.')
             st.rerun()
