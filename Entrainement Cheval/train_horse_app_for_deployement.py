@@ -117,13 +117,14 @@ df.at[row_index, "ok"] = is_ok
 
 # Écriture dans Google Sheets
 if st.button("Enregistrer les modifications"):
-    # Faites une copie pour ne pas polluer df dans la session
     df_to_upload = df.copy()
 
-    # 1) Remplacez les NaN par des chaînes vides
-    df_to_upload.fillna("", inplace=True)
+    # 1) Remplaçons inf et nan par None (=> JSON null)
+    import numpy as np
+    df_to_upload.replace([np.inf, -np.inf], np.nan, inplace=True)
+    df_to_upload = df_to_upload.where(pd.notnull(df_to_upload), None)
 
-    # 2) Convertissez les dates en chaînes (comme vous faisiez déjà)
+    # 2) Convertissons les dates en chaînes (comme vous faisiez déjà)
     for col in df_to_upload.columns:
         if (
             pd.api.types.is_datetime64_any_dtype(df_to_upload[col])
@@ -131,10 +132,14 @@ if st.button("Enregistrer les modifications"):
         ):
             df_to_upload[col] = df_to_upload[col].astype(str)
 
-    # 3) Poussez vers Google Sheets
+    # 3) On peut aussi tout convertir en str (optionnel si 1) suffit)
+    # df_to_upload = df_to_upload.astype(str)
+
+    # 4) Poussez vers Google Sheets
     sheet.update(
-        [df_to_upload.columns.values.tolist()]  # ligne des en-têtes
-        + df_to_upload.values.tolist()          # lignes de données
+        [df_to_upload.columns.values.tolist()]      # ligne des en-têtes
+        + df_to_upload.values.tolist()             # lignes de données
     )
     st.success("Modifications enregistrées avec succès.")
+
 
