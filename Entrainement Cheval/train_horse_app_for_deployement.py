@@ -72,8 +72,11 @@ if page == 'Gérer séances':
     st.title('Ajouter ou supprimer une séance')
     # Ajout de séance
     st.subheader('Ajouter une séance')
-    new_date = st.date_input('Date de la nouvelle séance', value=datetime.date.today())
-    new_exercise = st.text_input("Exercice associé", value="")
+    col1, col2 = st.columns(2)
+    with col1:
+        new_date = st.date_input('Date de la nouvelle séance', value=datetime.date.today())
+    with col2:
+        new_exercise = st.text_input("Exercice associé", value="")
     if st.button('Ajouter cette séance'):
         if new_date in df['Date'].values:
             st.warning('Cette date existe déjà. Si vous voulez la modifier, supprimez-la puis recréez la.')
