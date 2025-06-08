@@ -92,13 +92,22 @@ if page == 'Gérer séances':
         if del_date not in df['Date'].values:
             st.warning('Aucune séance pour cette date.')
         else:
-            idx = df[df['Date'] == del_date].index[0] + 2  # +2 pour entête et base 1
+            # Calcul de l'index dans la feuille (1-based + header)
+            raw_index = df[df['Date'] == del_date].index[0]
+            row_index = int(raw_index) + 2  # Cast to native int for JSON serialization
             try:
-                gsheet.delete_rows(idx)
+                # Utiliser delete_rows (gspread v5+)
+                gsheet.delete_rows(row_index)
                 st.success('Séance supprimée avec succès.')
-                st.rerun()
-            except Exception as e:
-                st.error(f"Impossible de supprimer la séance: {e}")
+                st.experimental_rerun()
+            except AttributeError:
+                # Fallback : effacer la ligne (remplacer par cellules vides)
+                num_cols = len(df.columns)
+                blank = [''] * num_cols
+                end_col = chr(65 + num_cols - 1)
+                gsheet.update(f'A{row_index}:{end_col}{row_index}', [blank])
+                st.success('Séance effacée (remplacement par vide).')
+                st.experimental_rerun()
 
 elif page == 'Voir séances':
     st.subheader('Consultation et mise à jour des séances')
