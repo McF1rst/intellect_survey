@@ -11,10 +11,10 @@ import hashlib
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+
 # Récupérer les utilisateurs depuis st.secrets
-user_passwords = {
-    user: hash_password(pwd) for user, pwd in st.secrets["users"].items()
-}
+user_passwords = {user: hash_password(pwd) for user, pwd in st.secrets["users"].items()}
+
 
 def login():
     st.title("Connexion")
@@ -23,12 +23,15 @@ def login():
     password = st.text_input("Mot de passe", type="password")
 
     if st.button("Se connecter"):
-        if username in user_passwords and user_passwords[username] == hash_password(password):
+        if username in user_passwords and user_passwords[username] == hash_password(
+            password
+        ):
             st.session_state["logged_in"] = True
             st.session_state["user"] = username
             st.rerun()
         else:
             st.error("Nom d'utilisateur ou mot de passe incorrect.")
+
 
 # Gérer la session utilisateur
 if "logged_in" not in st.session_state:
@@ -43,11 +46,10 @@ secrets_dict["private_key"] = secrets_dict["private_key"].replace("\\n", "\n")
 # Authentification Google Sheets
 scopes = [
     "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
+    "https://www.googleapis.com/auth/drive",
 ]
 creds = service_account.Credentials.from_service_account_info(
-    secrets_dict,
-    scopes=scopes
+    secrets_dict, scopes=scopes
 )
 client = gspread.authorize(creds)
 
@@ -64,17 +66,35 @@ df["Date"] = pd.to_datetime(df["Date"]).dt.date
 
 # Formatter les dates en français
 jours_fr = {
-    'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi',
-    'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi', 'Sunday': 'Dimanche'
+    "Monday": "Lundi",
+    "Tuesday": "Mardi",
+    "Wednesday": "Mercredi",
+    "Thursday": "Jeudi",
+    "Friday": "Vendredi",
+    "Saturday": "Samedi",
+    "Sunday": "Dimanche",
 }
 mois_fr = {
-    1: 'janvier', 2: 'février', 3: 'mars', 4: 'avril', 5: 'mai', 6: 'juin',
-    7: 'juillet', 8: 'août', 9: 'septembre', 10: 'octobre', 11: 'novembre', 12: 'décembre'
+    1: "janvier",
+    2: "février",
+    3: "mars",
+    4: "avril",
+    5: "mai",
+    6: "juin",
+    7: "juillet",
+    8: "août",
+    9: "septembre",
+    10: "octobre",
+    11: "novembre",
+    12: "décembre",
 }
+
+
 def format_date_fr(date_obj):
-    jour = jours_fr[date_obj.strftime('%A')]
+    jour = jours_fr[date_obj.strftime("%A")]
     mois = mois_fr[date_obj.month]
     return f"{jour} {date_obj.day} {mois} {date_obj.year}"
+
 
 # Date actuelle
 today_date = datetime.datetime.now().date()
@@ -89,7 +109,7 @@ selected_date = st.sidebar.selectbox(
     "Choisir une date de séance",
     options=date_options,
     index=default_index,
-    format_func=format_date_fr
+    format_func=format_date_fr,
 )
 
 # Récupérer la ligne sélectionnée
@@ -120,6 +140,7 @@ if st.button("Enregistrer les modifications"):
     df_to_upload = df.copy()
 
     import numpy as np
+
     df_to_upload.replace([np.inf, -np.inf], np.nan, inplace=True)
     df_to_upload = df_to_upload.where(pd.notnull(df_to_upload), None)
 
@@ -131,9 +152,7 @@ if st.button("Enregistrer les modifications"):
             df_to_upload[col] = df_to_upload[col].astype(str)
 
     sheet.update(
-        [df_to_upload.columns.values.tolist()]      # ligne des en-têtes
-        + df_to_upload.values.tolist()             # lignes de données
+        [df_to_upload.columns.values.tolist()]  # ligne des en-têtes
+        + df_to_upload.values.tolist()  # lignes de données
     )
     st.success("Modifications enregistrées avec succès.")
-
-
