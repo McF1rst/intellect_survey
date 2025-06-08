@@ -95,6 +95,23 @@ def format_date_fr(date_obj):
     mois = mois_fr[date_obj.month]
     return f"{jour} {date_obj.day} {mois} {date_obj.year}"
 
+st.sidebar.header("Ajouter une séance")
+new_date = st.sidebar.date_input(
+    "Date de la nouvelle séance", value=datetime.date.today()
+)
+if st.sidebar.button("Ajouter cette séance"):
+    if new_date in df['Date'].values:
+        st.sidebar.warning("Cette date existe déjà.")
+    else:
+        # Construire une ligne vide
+        new_row = {col: None for col in df.columns}
+        new_row['Date'] = new_date
+        # Ajouter à la feuille
+        # On convertit dans l'ordre des colonnes existantes
+        values = [str(new_row[col]) for col in df.columns]
+        gsheet.append_row(values)
+        st.sidebar.success("Nouvelle séance ajoutée avec succès.")
+        st.experimental_rerun()
 
 # Date actuelle
 today_date = datetime.datetime.now().date()
