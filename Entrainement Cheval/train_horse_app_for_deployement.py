@@ -78,7 +78,7 @@ def format_date_fr(date_obj):
 # Date actuelle
 today_date = datetime.datetime.now().date()
 if today_date in df["Date"].values:
-    default_index = df[df["Date"] == today_date].index[0]
+    default_index = int(df[df["Date"] == today_date].index[0])
 else:
     default_index = 0
 
