@@ -86,7 +86,7 @@ if page == 'Gérer séances':
             values = [str(new_row[col]) for col in list(new_row.keys())]
             gsheet.append_row(values)
             st.success('Nouvelle séance ajoutée avec succès.')
-            st.rerun()
+            # st.rerun()
 
     st.markdown('---')
     # Suppression de séance
@@ -103,7 +103,7 @@ if page == 'Gérer séances':
                 # Utiliser delete_rows (gspread v5+)
                 gsheet.delete_rows(row_index)
                 st.success('Séance supprimée avec succès.')
-                st.rerun()
+                # st.rerun()
             except AttributeError:
                 # Fallback : effacer la ligne (remplacer par cellules vides)
                 num_cols = len(df.columns)
@@ -111,7 +111,7 @@ if page == 'Gérer séances':
                 end_col = chr(65 + num_cols - 1)
                 gsheet.update(f'A{row_index}:{end_col}{row_index}', [blank])
                 st.success('Séance effacée (remplacement par vide).')
-                st.rerun()
+                # st.rerun()
 
 elif page == 'Voir séances':
     st.subheader('Consultation et mise à jour des séances')
