@@ -84,7 +84,7 @@ else:
 
 # Sélection de la date
 date_options = df["Date"].tolist()
-st.write(date_options)
+st.write(df[df["Date"] == today_date].index[0])
 selected_date = st.sidebar.selectbox(
     "Choisir une date de séance",
     options=date_options,
